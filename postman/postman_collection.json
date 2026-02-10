@@ -1,0 +1,192 @@
+{
+  "info": {
+    "name": "Energy Ingestion Engine API",
+    "description": "API collection for testing the Energy Ingestion Engine",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Ingestion",
+      "item": [
+        {
+          "name": "Ingest Single Meter Reading",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"meterId\": \"METER-001\",\n  \"kwhConsumedAc\": 125.5678,\n  \"voltage\": 240.5,\n  \"timestamp\": \"2024-02-09T10:30:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/ingest/meter",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "ingest", "meter"]
+            }
+          }
+        },
+        {
+          "name": "Ingest Single Vehicle Reading",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleId\": \"VEH-001\",\n  \"soc\": 75.5,\n  \"kwhDeliveredDc\": 106.7326,\n  \"batteryTemp\": 32.5,\n  \"timestamp\": \"2024-02-09T10:30:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/ingest/vehicle",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "ingest", "vehicle"]
+            }
+          }
+        },
+        {
+          "name": "Batch Ingest Meter Readings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"readings\": [\n    {\n      \"meterId\": \"METER-001\",\n      \"kwhConsumedAc\": 125.5678,\n      \"voltage\": 240.5,\n      \"timestamp\": \"2024-02-09T10:30:00Z\"\n    },\n    {\n      \"meterId\": \"METER-002\",\n      \"kwhConsumedAc\": 98.1234,\n      \"voltage\": 238.2,\n      \"timestamp\": \"2024-02-09T10:30:00Z\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/ingest/meter/batch",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "ingest", "meter", "batch"]
+            }
+          }
+        },
+        {
+          "name": "Batch Ingest Vehicle Readings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"readings\": [\n    {\n      \"vehicleId\": \"VEH-001\",\n      \"soc\": 75.5,\n      \"kwhDeliveredDc\": 106.7326,\n      \"batteryTemp\": 32.5,\n      \"timestamp\": \"2024-02-09T10:30:00Z\"\n    },\n    {\n      \"vehicleId\": \"VEH-002\",\n      \"soc\": 82.3,\n      \"kwhDeliveredDc\": 95.4321,\n      \"batteryTemp\": 30.1,\n      \"timestamp\": \"2024-02-09T10:30:00Z\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/ingest/vehicle/batch",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "ingest", "vehicle", "batch"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Vehicle Performance (24h)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/analytics/performance/VEH-001?hours=24",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "analytics", "performance", "VEH-001"],
+              "query": [
+                {
+                  "key": "hours",
+                  "value": "24"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vehicle Performance (1h)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/analytics/performance/VEH-001?hours=1",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "analytics", "performance", "VEH-001"],
+              "query": [
+                {
+                  "key": "hours",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Inefficient Vehicles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/analytics/fleet/inefficient?threshold=0.85&hours=24",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "analytics", "fleet", "inefficient"],
+              "query": [
+                {
+                  "key": "threshold",
+                  "value": "0.85"
+                },
+                {
+                  "key": "hours",
+                  "value": "24"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Status",
+      "item": [
+        {
+          "name": "Get Meter Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/status/meter/METER-001",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "status", "meter", "METER-001"]
+            }
+          }
+        },
+        {
+          "name": "Get Vehicle Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/status/vehicle/VEH-001",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "status", "vehicle", "VEH-001"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}
