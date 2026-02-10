@@ -17,23 +17,24 @@ import { AnalyticsService } from './services/analytics.service';
 import { IngestionController } from './controllers/ingestion.controller';
 import { AnalyticsController } from './controllers/analytics.controller';
 import { StatusController } from './controllers/status.controller';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
-    
+
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
     }),
-    
-    
+
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
     }),
-    
-    
+
+
     TypeOrmModule.forFeature([
       MeterTelemetryHistory,
       VehicleTelemetryHistory,
@@ -42,6 +43,7 @@ import { StatusController } from './controllers/status.controller';
     ]),
   ],
   controllers: [
+    AppController,
     IngestionController,
     AnalyticsController,
     StatusController,
@@ -51,4 +53,4 @@ import { StatusController } from './controllers/status.controller';
     AnalyticsService,
   ],
 })
-export class AppModule {}
+export class AppModule { }
