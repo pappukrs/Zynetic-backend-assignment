@@ -14,26 +14,29 @@ export const getTypeOrmConfig = (
   username: configService.get<string>('DB_USERNAME', 'energyuser'),
   password: configService.get<string>('DB_PASSWORD', 'energypass'),
   database: configService.get<string>('DB_DATABASE', 'energy_ingestion'),
+  ssl: configService.get<string>('NODE_ENV') === 'production'
+    ? { rejectUnauthorized: false }
+    : false,
   entities: [
     MeterTelemetryHistory,
     VehicleTelemetryHistory,
     MeterStatus,
     VehicleStatus,
   ],
-  synchronize: true, 
+  synchronize: true,
   logging: configService.get<string>('NODE_ENV') === 'development',
-  
-  
+
+
   extra: {
-    max: configService.get<number>('DB_POOL_SIZE', 20), 
+    max: configService.get<number>('DB_POOL_SIZE', 20),
     connectionTimeoutMillis: configService.get<number>('DB_CONNECTION_TIMEOUT', 30000),
     idleTimeoutMillis: 30000,
-    statement_timeout: 60000, 
+    statement_timeout: 60000,
   },
-  
-  
+
+
   cache: {
-    duration: 30000, 
+    duration: 30000,
     type: 'database',
   },
 });
