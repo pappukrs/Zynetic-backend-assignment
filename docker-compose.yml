@@ -1,0 +1,87 @@
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: energy-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: energyuser
+      POSTGRES_PASSWORD: energypass
+      POSTGRES_DB: energy_ingestion
+      POSTGRES_SHARED_BUFFERS: 256MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 1GB
+      POSTGRES_MAINTENANCE_WORK_MEM: 128MB
+      POSTGRES_CHECKPOINT_COMPLETION_TARGET: 0.9
+      POSTGRES_WAL_BUFFERS: 16MB
+      POSTGRES_DEFAULT_STATISTICS_TARGET: 100
+      POSTGRES_RANDOM_PAGE_COST: 1.1
+      POSTGRES_EFFECTIVE_IO_CONCURRENCY: 200
+      POSTGRES_WORK_MEM: 16MB
+      POSTGRES_MIN_WAL_SIZE: 1GB
+      POSTGRES_MAX_WAL_SIZE: 4GB
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U energyuser -d energy_ingestion"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - energy-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: energy-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: energyuser
+      DB_PASSWORD: energypass
+      DB_DATABASE: energy_ingestion
+      DB_POOL_SIZE: 20
+      DB_CONNECTION_TIMEOUT: 30000
+      LOG_LEVEL: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - energy-network
+    volumes:
+      - ./logs:/app/logs
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: energy-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@zynetic.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - energy-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  energy-network:
+    driver: bridge

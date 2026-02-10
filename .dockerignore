@@ -1,0 +1,11 @@
+node_modules
+dist
+npm-debug.log
+.git
+.gitignore
+.dockerignore
+.env
+ARCHITECTURE.md
+README.md
+Requirements.pdf
+postman_collection.json
